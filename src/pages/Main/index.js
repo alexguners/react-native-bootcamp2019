@@ -1,7 +1,11 @@
+/* eslint-disable react/sort-comp */
+/* eslint-disable react/static-property-placement */
+/* eslint-disable react/no-typos */
 import React, {Component} from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
 import {Keyboard, ActivityIndicator} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import PropTypes from 'prop-types';
 
 import {
     Container,
@@ -22,6 +26,16 @@ import api from '../../services/apis';
 // import { Container } from './styles';
 
 export default class Main extends Component {
+    static navigationOptions = {
+        title: 'Usuários',
+    };
+
+    static propTypes = {
+        navigation: PropTypes.shape({
+            navigate: PropTypes.fun,
+        }).isRequired,
+    };
+
     state = {
         newUser: '',
         users: [],
@@ -44,6 +58,16 @@ export default class Main extends Component {
             AsyncStorage.setItem('users', JSON.stringify(users));
         }
     }
+
+    handleNavigate = user => {
+        const {navigation} = this.props;
+
+        navigation.navigate('User', {user});
+    };
+
+    static navigationOptions = {
+        title: 'Usuários',
+    };
 
     handleAddUser = async () => {
         const {users, newUser} = this.state;
@@ -102,7 +126,8 @@ export default class Main extends Component {
                             <Name>{item.name}</Name>
                             <Bio>{item.bio}</Bio>
 
-                            <SubmitButton onPress={() => {}}>
+                            <SubmitButton
+                                onPress={() => this.handleNavigate(item)}>
                                 <ProfileButtonText>
                                     Ver Perfil
                                 </ProfileButtonText>
@@ -114,7 +139,3 @@ export default class Main extends Component {
         );
     }
 }
-
-Main.navigationOptions = {
-    title: 'Usuários',
-};
